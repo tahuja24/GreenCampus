@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TIET Campus Carbon Footprint & Green Challenge Tracker</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & ReactDOM -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <!-- Babel for JSX -->
+  <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans antialiased min-h-screen">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    function App() {
+      const [hostel, setHostel] = React.useState('Hostel J');
+      const [leaderboard, setLeaderboard] = React.useState([
+        { rank: 1, name: 'Hostel M (Anantam)', points: 1420, savedEnergy: '340 kWh', savedWater: '1,200 L' },
+        { rank: 2, name: 'Hostel J', points: 1280, savedEnergy: '290 kWh', savedWater: '980 L' },
+        { rank: 3, name: 'Hostel L (Viyat)', points: 1150, savedEnergy: '260 kWh', savedWater: '850 L' },
+        { rank: 4, name: 'Hostel N (Girls)', points: 1090, savedEnergy: '240 kWh', savedWater: '790 L' }
+      ]);
+
+      const [challenges, setChallenges] = React.useState([
+        { id: 'CH-1', title: 'Turn Off Unused Lab & Room Lights', points: 50, completed: false, category: 'Energy' },
+        { id: 'CH-2', title: 'Shorter Shower / Water Conservation', points: 40, completed: true, category: 'Water' },
+        { id: 'CH-3', title: 'Cycle or Walk to Academic Blocks', points: 60, completed: false, category: 'Transit' },
+        { id: 'CH-4', title: 'Zero Food Waste Mess Challenge', points: 45, completed: false, category: 'Mess' }
+      ]);
+
+      const [showModal, setShowModal] = React.useState(false);
+      const [actionTitle, setActionTitle] = React.useState('');
+      const [actionCategory, setActionCategory] = React.useState('Energy');
+      const [actionPoints, setActionPoints] = React.useState('50');
+
+      React.useEffect(() => {
+        lucide.createIcons();
+      }, [leaderboard, challenges, showModal]);
+
+      const toggleChallenge = (id) => {
+        setChallenges(prev => prev.map(ch => {
+          if (ch.id === id) {
+            return { ...ch, completed: !ch.completed };
+          }
+          return ch;
+        }));
+      };
+
+      const handleLogAction = (e) => {
+        e.preventDefault();
+        if (!actionTitle) return;
+
+        alert(`Successfully logged "${actionTitle}" for ${hostel}! Earned ${actionPoints} green points.`);
+        setActionTitle('');
+        setShowModal(false);
+      };
+
+      return (
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <header className="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-slate-800 pb-6">
+            <div>
+              <div className="flex items-center gap-2 text-emerald-400 font-semibold mb-1">
+                <i data-lucide="leaf" className="w-5 h-5"></i>
+                <span>TIET Smart Campus Initiative</span>
+              </div>
+              <h1 className="text-3xl font-bold tracking-tight text-white">Carbon Footprint & Green Challenge Tracker</h1>
+            </div>
+            <div className="mt-4 md:mt-0 flex gap-3">
+              <select 
+                value={hostel}
+                onChange={(e) => setHostel(e.target.value)}
+                className="bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-slate-200 text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+              >
+                <option value="Hostel J">Hostel J</option>
+                <option value="Hostel M (Anantam)">Hostel M (Anantam)</option>
+                <option value="Hostel L (Viyat)">Hostel L (Viyat)</option>
+                <option value="Hostel N (Girls)">Hostel N (Girls)</option>
+              </select>
+              <button
+                onClick={() => setShowModal(true)}
+                className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors shadow-lg shadow-emerald-600/20"
+              >
+                <i data-lucide="plus" className="w-4 h-4"></i> Log Green Action
+              </button>
+            </div>
+          </header>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-slate-800/40 border border-emerald-500/30 rounded-xl p-6 flex items-center justify-between shadow-xl">
+              <div>
+                <p className="text-slate-400 text-sm font-medium">Hostel Green Score</p>
+                <h3 className="text-3xl font-bold text-emerald-400 mt-1">1,280 pts</h3>
+              </div>
+              <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
+                <i data-lucide="award" className="w-6 h-6"></i>
+              </div>
+            </div>
+
+            <div className="bg-slate-800/40 border border-slate-700/60 rounded-xl p-6 flex items-center justify-between shadow-xl">
+              <div>
+                <p className="text-slate-400 text-sm font-medium">Energy Saved</p>
+                <h3 className="text-3xl font-bold text-indigo-400 mt-1">290 kWh</h3>
+              </div>
+              <div className="p-3 bg-indigo-500/10 text-indigo-400 rounded-xl border border-indigo-500/20">
+                <i data-lucide="zap" className="w-6 h-6"></i>
+              </div>
+            </div>
+
+            <div className="bg-slate-800/40 border border-slate-700/60 rounded-xl p-6 flex items-center justify-between shadow-xl">
+              <div>
+                <p className="text-slate-400 text-sm font-medium">Water Conserved</p>
+                <h3 className="text-3xl font-bold text-cyan-400 mt-1">980 Liters</h3>
+              </div>
+              <div className="p-3 bg-cyan-500/10 text-cyan-400 rounded-xl border border-cyan-500/20">
+                <i data-lucide="droplet" className="w-6 h-6"></i>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i data-lucide="check-circle-2" className="w-5 h-5 text-emerald-400"></i>
+                <span>Daily Eco-Friendly Challenges</span>
+              </h3>
+              <div className="space-y-4">
+                {challenges.map((ch) => (
+                  <div 
+                    key={ch.id} 
+                    className={`border rounded-xl p-5 flex items-center justify-between transition-all ${
+                      ch.completed ? 'bg-emerald-950/20 border-emerald-500/40' : 'bg-slate-800/40 border-slate-700/60'
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <button 
+                        onClick={() => toggleChallenge(ch.id)}
+                        className={`w-6 h-6 rounded-md flex items-center justify-center border transition-all ${
+                          ch.completed ? 'bg-emerald-600 border-emerald-500 text-white' : 'border-slate-600 bg-slate-900'
+                        }`}
+                      >
+                        {ch.completed && <i data-lucide="check" className="w-4 h-4"></i>}
+                      </button>
+                      <div>
+                        <h4 className={`font-semibold ${ch.completed ? 'line-through text-slate-400' : 'text-white'}`}>{ch.title}</h4>
+                        <span className="text-xs text-emerald-400">+{ch.points} Green Points • {ch.category}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i data-lucide="trophy" className="w-5 h-5 text-amber-400"></i>
+                <span>Inter-Hostel Sustainability Leaderboard</span>
+              </h3>
+              <div className="bg-slate-800/40 border border-slate-700/60 rounded-xl p-4 space-y-3 shadow-xl">
+                {leaderboard.map((item) => (
+                  <div key={item.rank} className="flex items-center justify-between p-3 bg-slate-900/60 rounded-lg border border-slate-800">
+                    <div className="flex items-center gap-3">
+                      <span className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs ${
+                        item.rank === 1 ? 'bg-amber-500 text-slate-950' : 
+                        item.rank === 2 ? 'bg-slate-300 text-slate-950' : 'bg-amber-700 text-white'
+                      }`}>
+                        #{item.rank}
+                      </span>
+                      <div>
+                        <h4 className="font-bold text-white text-sm">{item.name}</h4>
+                        <p className="text-xs text-slate-400">Energy: {item.savedEnergy} | Water: {item.savedWater}</p>
+                      </div>
+                    </div>
+                    <span className="font-bold text-emerald-400 text-sm">{item.points} pts</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {showModal && (
+            <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+              <div className="bg-slate-800 border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-bold text-white">Log Custom Green Action</h3>
+                  <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-white">
+                    <i data-lucide="x" className="w-5 h-5"></i>
+                  </button>
+                </div>
+                <form onSubmit={handleLogAction} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-medium text-slate-300 mb-1">Action Description</label>
+                    <input 
+                      type="text" 
+                      required
+                      placeholder="e.g. Unplugged dorm appliances over weekend"
+                      value={actionTitle}
+                      onChange={(e) => setActionTitle(e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-medium text-slate-300 mb-1">Category</label>
+                      <select 
+                        value={actionCategory}
+                        onChange={(e) => setActionCategory(e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+                      >
+                        <option value="Energy">Energy</option>
+                        <option value="Water">Water</option>
+                        <option value="Transit">Transit</option>
+                        <option value="Mess">Mess / Waste</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-300 mb-1">Points Worth</label>
+                      <input 
+                        type="number" 
+                        value={actionPoints}
+                        onChange={(e) => setActionPoints(e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-3 mt-6">
+                    <button 
+                      type="button" 
+                      onClick={() => setShowModal(false)}
+                      className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm font-medium transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      type="submit" 
+                      className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-medium transition-colors shadow-lg shadow-emerald-600/20"
+                    >
+                      Submit Action
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
